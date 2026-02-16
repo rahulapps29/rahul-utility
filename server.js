@@ -1,32 +1,47 @@
-require("dotenv").config(); // Load environment variables from .env
+require("dotenv").config(); // Load environment variables
+
 const express = require("express");
-const nodemailer = require("nodemailer");
-const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-const app = express();
-const dotenv = require("dotenv");
 const cors = require("cors");
 
-dotenv.config();
+const app = express();
 
-//routes
+/* ======================
+   ROUTES
+====================== */
 const labelRoutes = require("./Label_backend/routes/LabelRoutes");
 const emailRoutes = require("./Email_backend/routes/emailRoutes");
 const urlRoutes = require("./Url_backend/routes/urlRoutes");
 
-// Allow requests from all origins
+/* ======================
+   MIDDLEWARE
+====================== */
 app.use(cors());
-
-// Middleware to parse JSON data from the request body
 app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI);
+/* ======================
+   DATABASE CONNECTION
+====================== */
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB Connected Successfully"))
+  .catch((err) => {
+    console.error("MongoDB Connection Failed:", err.message);
+    process.exit(1);
+  });
 
+/* ======================
+   ROUTE MOUNTING
+====================== */
 app.use("/label", labelRoutes);
-app.use("/mailer", emailRoutes); // mount email routes
+app.use("/mailer", emailRoutes);
 app.use("/urls", urlRoutes);
 
-const PORT = 4028;
-app.listen(PORT, () =>
-  console.log(`Server is running on http://localhost:${PORT}`)
-);
+/* ======================
+   SERVER START
+====================== */
+const PORT = process.env.PORT || 4028;
+
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});

@@ -1,40 +1,26 @@
 const express = require("express");
-const Url = require("../models/Url");
 const router = express.Router();
+const {
+  createUrl,
+  getUrls,
+  updateUrl,
+  deleteUrl,
+  testRoute,
+} = require("../controllers/urlController");
 
 // Create
-router.post("/", async (req, res) => {
-  const { title, link } = req.body;
-  const newUrl = new Url({ title, link });
-  await newUrl.save();
-  res.json(newUrl);
-});
+router.post("/", createUrl);
 
 // Read
-router.get("/", async (req, res) => {
-  const urls = await Url.find();
-  res.json(urls);
-});
+router.get("/", getUrls);
 
-router.get("/test", (req, res) => {
-  res.send("Server is runnning");
-});
+// Test
+router.get("/test", testRoute);
 
 // Update
-router.put("/:id", async (req, res) => {
-  const { title, link } = req.body;
-  const updated = await Url.findByIdAndUpdate(
-    req.params.id,
-    { title, link },
-    { new: true }
-  );
-  res.json(updated);
-});
+router.put("/:id", updateUrl);
 
 // Delete
-router.delete("/:id", async (req, res) => {
-  await Url.findByIdAndDelete(req.params.id);
-  res.json({ message: "Deleted successfully" });
-});
+router.delete("/:id", deleteUrl);
 
 module.exports = router;
