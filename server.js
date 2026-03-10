@@ -12,6 +12,10 @@ const app = express();
 const labelRoutes = require("./Label_backend/routes/LabelRoutes");
 const emailRoutes = require("./Email_backend/routes/emailRoutes");
 const urlRoutes = require("./Url_backend/routes/urlRoutes");
+const tuyaRoutes = require("./Tuya_backend/routes/tuyaRoutes");
+// NEW ROUTES
+const authRoutes = require("./Private_backend/routes/authRoutes");
+const privateRoutes = require("./Private_backend/routes/privateRoutes");
 
 /* ======================
    MIDDLEWARE
@@ -36,6 +40,11 @@ mongoose
 app.use("/label", labelRoutes);
 app.use("/mailer", emailRoutes);
 app.use("/urls", urlRoutes);
+app.use("/tuya", tuyaRoutes);
+
+// NEW MOUNTING
+app.use("/auth", authRoutes); // Login/Auth
+app.use("/private", privateRoutes); // Vault CRUD (Protected by middleware)
 
 /* ======================
    SERVER START
